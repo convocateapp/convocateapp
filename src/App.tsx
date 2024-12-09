@@ -1,14 +1,14 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import * as React from 'react';
-import Login from './src/screens/Login'; // Asegúrate de tener una pantalla Login
-import Register from './src/screens/Register'; // Asegúrate de tener una pantalla Register
-import CrearPartido from './src/screens/partidos/CrearPartido';
-import ListaPartidos from './src/screens/partidos/ListaPartidos'; // Asegúrate de que la ruta es correcta
+import React from 'react';
+import Login from './screens/Login';
+import Register from './screens/Register';
+import CrearPartido from './screens/partidos/CrearPartido';
+import ListaPartidos from './screens/partidos/ListaPartidos'; // Asegúrate de que la ruta es correcta
 
 const Stack = createStackNavigator();
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
