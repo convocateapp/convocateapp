@@ -1,15 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Header from '../../components/Header'; // Asegúrate de que la ruta sea correcta
 import config from '../../config/config';
+import { RootStackParamList } from '../../types'; // Asegúrate de que la ruta sea correcta
 import { Partido } from './../../models/partido';
 
-const ListaPartidos = () => {
+const ListaPartidos: React.FC = () => {
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const [data, setData] = useState<Partido[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const navigation = useNavigation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,6 +46,7 @@ const ListaPartidos = () => {
                     "32000",
                     "Futbolito",
                     "Calle 123 # 45-67",
+                    "camiseta roja"
                 );
                 const response = await fetch(config.bffpartidolistbyuser, {
                     method: 'POST',
@@ -76,24 +79,27 @@ const ListaPartidos = () => {
     if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
     if (error) return <Text>Error: {error}</Text>;
 
-   const handleVerFicha = (partidoId: number) => {
-      // navigation.navigate('', { partidoId });
-   };
-   const renderItem = ({ item }: { item: Partido }) => (
+    const handleVerFicha = (partidoId: number) => {
+        navigation.navigate('FichaPartido', { partidoId });
+    };
+
+    const renderItem = ({ item }: { item: Partido }) => (
         <TouchableOpacity style={styles.item} onPress={() => handleVerFicha(item.partidoId)}>
             <Text style={styles.title}>Fecha: {item.fecha} Hora: {item.hora}</Text>
             <Text style={styles.subtitle}>{item.nombreComplejo} - {item.descEstadoPartido}</Text>
         </TouchableOpacity>
     );
-   return (
+
+    return (
         <View style={styles.container}>
+            <Header />
             <Text style={styles.header}>Mis Partidos</Text>
             <FlatList
                 data={data}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.partidoId.toString()}
             />
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CrearPartido' as never)}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CrearPartido')}>
                 <Text style={styles.buttonText}>Crear Partido</Text>
             </TouchableOpacity>
         </View>

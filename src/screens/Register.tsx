@@ -27,7 +27,7 @@ const Register: React.FC = () => {
                     'Accept': 'text/plain',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userName: username, email, password, name, lastName, apodo }),
+                body: JSON.stringify({ userName: username, email : email, password: password, name: name, lastName: lastName, apodo: apodo }),
             });
             console.log('response.status: ' + response.status);
             if (response.status === 200) {
@@ -37,6 +37,7 @@ const Register: React.FC = () => {
                 setMessage('Error al crear el usuario');
             }
         } catch (error) {
+            console.log('Error en la conexión con la API: ' + (error as any).message);
             setMessage('Error en la conexión con la API: ' + (error as any).message);
         }
     };

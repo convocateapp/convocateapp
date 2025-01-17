@@ -14,8 +14,10 @@ const CrearPartido: React.FC = () => {
     const [tipoPartido, setTipoPartido] = useState('0'); // Estado para Tipo Partido
     const [nombreComplejo, setNombreComplejo] = useState('');
     const [descEstadoPartido, setDescEstadoPartido] = useState('Pendiente'); // Asignar valor "Pendiente"
-    const [ubicacion, setUbicacion] = useState('');
+    const [ubicacionComplejo, setUbicacionComplejo] = useState('');
     const [valorCancha, setValorCancha] = useState('');
+    const [numeroCancha, setNumeroCancha] = useState('');
+    const [observacion, setObservacion] = useState('');
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
@@ -40,29 +42,29 @@ const CrearPartido: React.FC = () => {
         const fechaHora = `${fecha}T${hora}:00.000Z`; // Combina fecha y hora en un solo campo
 
         const partido = {
-            partidoId: 0,
-            fecha: fechaHora,
+                  fecha: fechaHora,
             hora: fechaHora,
-            complejoId: 1, // Valor fijo para complejoId
-            numeroCancha: 10,
-            valorPersona: 0,
-            estadoPartidoId: 1,
-            fechaCreacion: fechaHora,
+            numeroCancha: parseInt(numeroCancha, 10), 
             userId: user,
-            valorCancha: "10000",
-            tipoPartido : tipoPartido,
-            ubicacionComplejo: "ubicacion",
-            nombreComplejo:"otro",
-            observacion: "nuev obs"
+            valorCancha,
+            tipoPartido,
+            ubicacionComplejo,
+            nombreComplejo,
+            observacion
+            
+            //complejoId: 1, // Valor fijo para complejoId
+            //valorPersona: 0,
+            //estadoPartidoId: 1,
+            //fechaCreacion: new Date().toISOString(),
+            //descEstadoPartido,
+             
+           
             
         };
 
         console.log('partido fecha:', partido.fecha);
         console.log('partido hora:', partido.hora);
-        console.log('partido complejoId:', partido.complejoId);
-        console.log('url :', config.bffpartidocrearpartido);
-        console.log('token:', token);
-        console.log('user:', user);   
+
         try {
             const response = await fetch(config.bffpartidocrearpartido, {
                 method: 'POST',
@@ -74,17 +76,27 @@ const CrearPartido: React.FC = () => {
                 body: JSON.stringify(partido)
             });
 
+            // Agregar más información de depuración
+            console.log('Response status:', response.status);
+            const responseBody = await response.text();
+            console.log('Response body:', responseBody);
+
             if (!response.ok) {
-                const errorText = await response.text();
-                    console.log('Error response:', errorText);
-                  //  throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-                throw new Error('Error al crear el partido');
+                throw new Error(`Error al crear el partido: ${response.status} - ${responseBody}`);
             }
 
-            navigation.navigate('ListaPartidos'); // Navegar de vuelta a la lista de partidos
+            if (responseBody) {
+                const result = JSON.parse(responseBody);
+                console.log('PartidoId:', result.partidoId);
+                navigation.navigate('FichaPartido', { partidoId: result.partidoId }); // Navegar a FichaPartidos con el partidoId
+            } else {
+                console.log('Respuesta vacía del servidor');
+                Alert.alert('Éxito', 'El partido se ha creado correctamente, pero no se recibió un ID de partido.');
+                navigation.navigate('ListaPartidos'); // Navegar a ListaPartidos si no se recibe un ID de partido
+            }
         } catch (error) {
             console.error('Error:', error);
-            Alert.alert('Error', 'Error al crear el partido');
+            Alert.alert('Error', `Error al crear el partido: ${(error as Error).message}`);
         }
     };
 
@@ -146,14 +158,29 @@ const CrearPartido: React.FC = () => {
             <TextInput
                 style={styles.input}
                 placeholder="Ubicación Complejo"
-                value={ubicacion}
-                onChangeText={setUbicacion}
+                value={ubicacionComplejo}
+                onChangeText={setUbicacionComplejo}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Valor Cancha"
                 value={valorCancha}
                 onChangeText={setValorCancha}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Número de Cancha"
+                value={numeroCancha}
+                onChangeText={setNumeroCancha}
+                keyboardType="numeric"
+            />
+            <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Observación"
+                value={observacion}
+                onChangeText={setObservacion}
+                multiline={true}
+                numberOfLines={4}
             />
             <TextInput
                 style={styles.input}
@@ -188,6 +215,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginBottom: 12,
         paddingHorizontal: 8,
+    },
+    textArea: {
+        height: 100, // Ajustar la altura para el campo de texto multilinea
     },
     pickerContainer: {
         height: 50, // Aumentar la altura para asegurar que el contenido sea visible

@@ -13,6 +13,7 @@ export class Partido {
     valorCancha: string;
     tipoPartido: string;
     ubicacionComplejo: string;
+    observacion: string;    
 
     constructor(
         partidoId: number,
@@ -29,6 +30,7 @@ export class Partido {
         valorCancha: string,
         tipoPartido: string,
         ubicacionComplejo: string,
+        observacion: string,
     ) {
         this.partidoId = partidoId,
         this.userId = userId;
@@ -44,5 +46,6 @@ export class Partido {
         this.valorCancha = valorCancha;         
         this.tipoPartido = tipoPartido;
         this.ubicacionComplejo = ubicacionComplejo;
+        this.observacion        =    observacion;
     }
 }

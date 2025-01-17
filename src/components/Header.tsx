@@ -1,75 +1,116 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import config from '../config/config';
-import { RootStackParamList } from '../types'; // Asegúrate de que la ruta sea correcta
+import { RequestRegisterUser } from '../models/requestRegisterUser';
+
+type RootStackParamList = {
+    Header: undefined;
+    EditUser: undefined;
+    ChangePassword: undefined;
+    Login: undefined;
+    FichaJugador: { username: string };
+};
 
 const Header: React.FC = () => {
-    const [menuOpen, setMenuOpen] = useState(false);
+    const [username, setUsername] = useState('');
     const [name, setName] = useState('');
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const [menuVisible, setMenuVisible] = useState(false);
 
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
-    };
-
-    const url = config.bffauthgetuser;
+    type HeaderNavigationProp = StackNavigationProp<RootStackParamList, 'Header'>;
+    const navigation = useNavigation<HeaderNavigationProp>();
 
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const token = await AsyncStorage.getItem('token');
-                const user = await AsyncStorage.getItem('user');
-                const response = await fetch(url, {
+        const fetchUsername = async () => {
+            const token = await AsyncStorage.getItem('token');
+            const storedUsername = await AsyncStorage.getItem('user');
+            //console.log('header token:', token);
+            console.log('stored username:', storedUsername);
+
+            if (token && storedUsername) {
+                const requestUser = new RequestRegisterUser(storedUsername, ''); // Crear el objeto con el username
+                console.log('requestUser:', requestUser);
+                const requestOptions = {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({
-                        userName: user,
-                        password: "",
-                        email: "",
-                        name: "",
-                        lastName: "",
-                        apodo: ""
-                    })
-                });
+                    body: JSON.stringify(requestUser)
+                };
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setName(data.name);
-                } else {
-                    console.error('Error fetching user data');
+                try {
+                    const response = await fetch(config.bffauthgetuser, requestOptions);
+                    console.log('response:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const result = await response.json();
+                    console.log('result:', result);
+                    setUsername(result.userName);
+                    setName(result.name); // Guardar el nombre en el estado
+                } catch (error) {
+                    console.error('Error fetching username:', error);
                 }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
+            } else {
+                console.log('Token or username not found');
             }
         };
 
-        fetchUser();
+        fetchUsername();
     }, []);
+
+    const toggleMenu = () => {
+        setMenuVisible(!menuVisible);
+    };
+
+    const navigateTo = (screen: keyof RootStackParamList) => {
+        setMenuVisible(false);
+        console.log('header username:', username);
+        if (screen === 'FichaJugador') {
+            navigation.navigate(screen, { username }); // Pasar el username como parámetro
+        } else {
+            navigation.navigate(screen);
+        }
+    };
 
     return (
         <View style={styles.header}>
-            <View style={styles.headerContent}>
-                <Text style={styles.title}>ConvocateApp</Text>
-                <TouchableOpacity onPress={toggleMenu} style={styles.menuButton}>
-                    <Text style={styles.menuIcon}>☰</Text>
-                </TouchableOpacity>
-                <Text style={styles.userName}>Usuario: {name}</Text>
-            </View>
-            {menuOpen && (
-                <View style={styles.menu}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.menuItem}>
-                        <Text style={styles.menuItemText}>Perfil</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.menuItem}>
-                        <Text style={styles.menuItemText}>Modificar Perfil</Text>
-                    </TouchableOpacity>
-                </View>
+            <TouchableOpacity style={styles.menuButton} onPress={toggleMenu}>
+                <Text style={styles.menuText}>☰</Text>
+            </TouchableOpacity>
+            <Text style={styles.username}>{name}</Text>
+            {menuVisible && (
+                <Modal
+                    transparent={true}
+                    animationType="fade"
+                    visible={menuVisible}
+                    onRequestClose={() => setMenuVisible(false)}
+                >
+                    <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
+                        <View style={styles.modalOverlay} />
+                    </TouchableWithoutFeedback>
+                    <View style={styles.menu}>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => navigateTo('EditUser')}>
+                            <Text style={styles.menuItemText}>Editar Usuario</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => navigateTo('ChangePassword')}>
+                            <Text style={styles.menuItemText}>Cambiar Password</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => navigateTo('FichaJugador')}>
+                            <Text style={styles.menuItemText}>Ficha Jugador</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => {
+                            AsyncStorage.clear();
+                            navigation.navigate('Login');
+                        }}>
+                            <Text style={styles.menuItemText}>Cerrar Sesión</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
             )}
         </View>
     );
@@ -77,66 +118,42 @@ const Header: React.FC = () => {
 
 const styles = StyleSheet.create({
     header: {
-        position: 'absolute',
-        top: 0,
-        width: '100%',
-        backgroundColor: '#fff',
-        zIndex: 1000,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        paddingVertical: 10,
-        textAlign: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        paddingLeft: 10,
-        paddingRight: 10,
-        minHeight: 100,
-    },
-    headerContent: {
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
         flexDirection: 'row',
-    },
-    title: {
-        margin: 0,
-        fontFamily: 'Segoe Print, sans-serif',
-        color: 'black',
-        fontSize: 24,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: '#f8f9fa',
     },
     menuButton: {
-        backgroundColor: 'transparent',
-        borderWidth: 0,
-        cursor: 'pointer',
-        color: 'black',
+        padding: 10,
     },
-    menuIcon: {
+    menuText: {
         fontSize: 24,
     },
-    userName: {
-        color: 'black',
-        marginLeft: 10,
+    username: {
+        fontSize: 18,
+    },
+    modalOverlay: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
     },
     menu: {
         position: 'absolute',
-        top: '100%',
-        left: 0,
-        width: '100%',
-        backgroundColor: '#ffffff',
-        borderTopWidth: 1,
-        borderTopColor: '#ccc',
-        boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+        top: 50,
+        left: 10, // Cambiado a la izquierda
+        backgroundColor: 'white',
+        borderRadius: 5,
+        elevation: 5,
     },
     menuItem: {
         padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
     },
     menuItemText: {
-        textDecorationLine: 'none',
-        color: 'inherit',
+        fontSize: 16,
     },
 });
 

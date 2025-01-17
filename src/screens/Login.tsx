@@ -39,12 +39,10 @@ const Login: React.FC = () => {
 
             if (response.status === 200) {
                 const data = await response.json();
-                const token = extractToken(data.token); // Usar la función para extraer el token
-                // console.log('Login -> Token:', token);
+                const token = extractToken(data.token); 
+                console.log('Login -> Token:', token);
                 if (token) {
-                    // Almacenar solo el token
                     await AsyncStorage.setItem('token', token);
-                    // Almacenar el valor del cuadro de texto username en el AsyncStorage
                     await AsyncStorage.setItem('user', username);
                     navigation.navigate('ListaPartidos');
                 } else {
