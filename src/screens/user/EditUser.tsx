@@ -4,8 +4,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import config from '../../config/config';
-//import {RootStackParamList} from '../../navigation/AppNavigator';
-import RootStackParamList from '../../navigation/AppNavigator';
+// Ensure that the correct path to AppNavigator is used and that it exports RootStackParamList
+// import { RootStackParamList } from '../../navigation/AppNavigator'; // Commented out due to missing module
 
 type RootStackParamList = {
     EditUser: undefined;

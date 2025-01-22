@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Footer from '../../components/Footer';
 import Header from '../../components/Header'; // Asegúrate de que la ruta sea correcta
 import config from '../../config/config';
 import { RootStackParamList } from '../../types'; // Asegúrate de que la ruta sea correcta
@@ -93,7 +94,7 @@ const ListaPartidos: React.FC = () => {
     return (
         <View style={styles.container}>
             <Header />
-            <Text style={styles.header}>Mis Partidos</Text>
+            
             <FlatList
                 data={data}
                 renderItem={renderItem}
@@ -102,6 +103,7 @@ const ListaPartidos: React.FC = () => {
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CrearPartido')}>
                 <Text style={styles.buttonText}>Crear Partido</Text>
             </TouchableOpacity>
+            <Footer />
         </View>
     );
 };

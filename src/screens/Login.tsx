@@ -40,7 +40,7 @@ const Login: React.FC = () => {
             if (response.status === 200) {
                 const data = await response.json();
                 const token = extractToken(data.token); 
-                console.log('Login -> Token:', token);
+               //s console.log('Login -> Token:', token);
                 if (token) {
                     await AsyncStorage.setItem('token', token);
                     await AsyncStorage.setItem('user', username);

@@ -1,9 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { AuthContext } from '../../../src/context/AuthContext';
+import Footer from '../../components/Footer'; // Adjust the path as necessary
 import config from '../../config/config';
 
 // Importar la imagen predeterminada utilizando require
@@ -14,11 +15,11 @@ type RootStackParamList = {
 };
 
 const FichaJugador = () => {
+    const { token, user: username } = useContext(AuthContext); // Obtener token y username del AuthContext
     const navigation = useNavigation();
     const route = useRoute<RouteProp<RootStackParamList, 'FichaJugador'>>();
-    const { username } = route.params; // Obtener el username de los parámetros de la ruta
+    // const { username } = route.params; // Obtener el username de los parámetros de la ruta (ya no es necesario)
 
-    const [token, setToken] = useState<string | null>(null);
     const [jugadorId, setJugadorId] = useState('');
     const [nombres, setNombres] = useState('');
     const [apellidos, setApellidos] = useState('');
@@ -28,18 +29,9 @@ const FichaJugador = () => {
     const [fechaIngreso, setFechaIngreso] = useState('');
     const [fechaNacimiento, setFechaNacimiento] = useState('');
     const [email, setEmail] = useState('');
-    const [userName, setUserName] = useState(username); // Inicializar con el username recibido
+    const [userName, setUserName] = useState(username); // Inicializar con el username recibido del contexto
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchToken = async () => {
-            const storedToken = await AsyncStorage.getItem('token');
-            setToken(storedToken);
-        };
-
-        fetchToken();
-    }, []);
 
     const fetchJugadorData = async () => {
         if (token) {
@@ -54,7 +46,6 @@ const FichaJugador = () => {
             };
 
             try {
-                console.log('===== FichaJugador =====' + ' userName:' + username);
                 const response = await fetch(`${config.bffpartidogetjugadorid}`, requestOptions);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -172,10 +163,8 @@ const FichaJugador = () => {
     if (error) return <Text style={styles.errorText}>Error: {error}</Text>; // Mostrar el mensaje de error
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.header}>Ficha Jugador</Text>
+
             <View style={styles.infoContainer}>
-                <Text style={styles.label}>Foto</Text>
                 <View style={styles.imageContainer}>
                     <Image source={fotoPrincipal ? { uri: fotoPrincipal } : defaultImage} style={styles.image} />
                 </View>
@@ -204,8 +193,10 @@ const FichaJugador = () => {
                 <TouchableOpacity style={styles.saveButton} onPress={saveJugadorData}>
                     <Text style={styles.buttonText}>Guardar</Text>
                 </TouchableOpacity>
+            <Footer />
             </View>
-        </ScrollView>
+     
+        
     );
 };
 

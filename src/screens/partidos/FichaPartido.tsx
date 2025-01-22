@@ -3,6 +3,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Contacts from 'expo-contacts'; // Importar expo-contacts
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Animated, Button, Modal, PanResponder, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Footer from '../../components/Footer';
 import config from '../../config/config';
 import { RequestGetJugadorId } from '../../models/requestGetJugadorId';
 import { RequestRegisterUser } from '../../models/requestRegisterUser'; // Importar la clase RequestRegisterUser
@@ -114,7 +115,7 @@ const FichaPartido = () => {
 
         try {
             const getjugadoridResponse = await fetch(`${config.bffpartidogetjugadorid}`, getUserOptions);
-            console.log('== getUserResponse1: ', getjugadoridResponse.status);
+
             if (getjugadoridResponse.status === 200) {
                 const jugadorData = await getjugadoridResponse.json();
                 const jugador = {
@@ -163,7 +164,7 @@ const FichaPartido = () => {
                         },
                         body: JSON.stringify(requestGetJugadorId)
                     };
-                    console.log('== requestGetJugadorId: ', requestGetJugadorId.UserName);
+                  //  console.log('== requestGetJugadorId: ', requestGetJugadorId.UserName);
                     const responsegetjugadorid = await fetch(`${config.bffpartidogetjugadorid}`, getJugadorIdOptions);   
                     const jugadorData = await responsegetjugadorid.json();
                     const jugador = {
@@ -173,12 +174,7 @@ const FichaPartido = () => {
                         nombreJugador: contact.name,
                         userId: userNameNew
                     };
-                    console.log('== jugadorid: ', jugador.jugadorId);
-                    console.log('== partidoid: ', jugador.partidoId);
-                    console.log('== estadoJugadorPartidoId: ', jugador.estadoJugadorPartidoId);
-                    console.log('== nombreJugador: ', jugador.nombreJugador);
-                    console.log('== userId: ', jugador.userId);
-
+                   
                     await fetch(config.bffpartidoaddplayermatch, {
                         method: 'POST',
                         headers: {
@@ -209,7 +205,7 @@ const FichaPartido = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Ficha Partido</Text>
+
             <Animated.View {...panResponder.panHandlers} style={[pan.getLayout()]}>
                 {showContainer1 ? (
                     <View style={styles.infoContainer}>
@@ -268,6 +264,7 @@ const FichaPartido = () => {
                     ))}
                 </ScrollView>
             </View>
+            <Footer />
         </View>
     );
 };
