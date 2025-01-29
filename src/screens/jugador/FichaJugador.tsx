@@ -3,8 +3,10 @@ import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../../../src/context/AuthContext';
 import Footer from '../../components/Footer'; // Adjust the path as necessary
+import Header from '../../components/Header'; // Adjust the path as necessary
 import config from '../../config/config';
 
 // Importar la imagen predeterminada utilizando require
@@ -18,7 +20,6 @@ const FichaJugador = () => {
     const { token, user: username } = useContext(AuthContext); // Obtener token y username del AuthContext
     const navigation = useNavigation();
     const route = useRoute<RouteProp<RootStackParamList, 'FichaJugador'>>();
-    // const { username } = route.params; // Obtener el username de los parámetros de la ruta (ya no es necesario)
 
     const [jugadorId, setJugadorId] = useState('');
     const [nombres, setNombres] = useState('');
@@ -77,7 +78,7 @@ const FichaJugador = () => {
                 setFotoPrincipal(jugadorData.fotoPrincipal);
                 setIdEstado(jugadorData.idEstado);
                 setFechaIngreso(jugadorData.fechaIngreso);
-                setFechaNacimiento(jugadorData.fechaNacimiento);
+                setFechaNacimiento(formatDate(jugadorData.fechaNacimiento));
                 setEmail(jugadorData.email);
                 setUserName(jugadorData.userName);
             } catch (error) {
@@ -150,7 +151,7 @@ const FichaJugador = () => {
                 setFotoPrincipal(result.fotoPrincipal);
                 setIdEstado(result.idEstado);
                 setFechaIngreso(result.fechaIngreso);
-                setFechaNacimiento(result.fechaNacimiento);
+                setFechaNacimiento(formatDate(result.fechaNacimiento));
                 setEmail(result.email);
                 setUserName(result.userName);
             } catch (error) {
@@ -159,21 +160,28 @@ const FichaJugador = () => {
         }
     };
 
+    const formatDate = (dateString: string) => {
+        const options = { day: '2-digit' as const, month: '2-digit' as const, year: 'numeric' as const };
+        return new Date(dateString).toLocaleDateString('es-ES', options);
+    };
+
     if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
     if (error) return <Text style={styles.errorText}>Error: {error}</Text>; // Mostrar el mensaje de error
 
     return (
-
+        <View style={styles.container}>
+            <Header />
             <View style={styles.infoContainer}>
-                <View style={styles.imageContainer}>
+                <View style={styles.imageRow}>
                     <Image source={fotoPrincipal ? { uri: fotoPrincipal } : defaultImage} style={styles.image} />
+                    <TouchableOpacity style={styles.button} onPress={pickImage}>
+                        <Icon name="image" size={20} color="#45f500" />
+                        <Text style={styles.buttonText}>Cargar Imagen</Text>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.button} onPress={pickImage}>
-                    <Text style={styles.buttonText}>Cargar Imagen</Text>
-                </TouchableOpacity>
 
                 <Text style={styles.label}>Jugador ID</Text>
-                <TextInput style={styles.input} value={jugadorId} onChangeText={setJugadorId} />
+                <Text style={styles.value}>{jugadorId}</Text>
 
                 <Text style={styles.label}>Nombres</Text>
                 <TextInput style={styles.input} value={nombres} onChangeText={setNombres} />
@@ -190,28 +198,24 @@ const FichaJugador = () => {
                 <Text style={styles.label}>Email</Text>
                 <TextInput style={styles.input} value={email} onChangeText={setEmail} />
 
-                <TouchableOpacity style={styles.saveButton} onPress={saveJugadorData}>
-                    <Text style={styles.buttonText}>Guardar</Text>
-                </TouchableOpacity>
-            <Footer />
+                <View style={styles.saveButtonContainer}>
+                    <TouchableOpacity style={styles.saveButton} onPress={saveJugadorData}>
+                        <Icon name="save" size={20} color="#45f500" />
+                        <Text style={styles.buttonText}>Guardar</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-     
-        
+            <View style={styles.footerContainer}>
+                <Footer />
+            </View>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
         backgroundColor: '#f8f9fa',
-    },
-    header: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        color: '#343a40',
-        textAlign: 'center',
     },
     infoContainer: {
         marginBottom: 16,
@@ -224,9 +228,26 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
         elevation: 5,
     },
+    imageRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 15,
+    },
+    imageContainer: {
+        alignItems: 'center',
+    },
+    image: {
+        width: 100,
+        height: 100,
+    },
     label: {
         fontSize: 16,
         marginBottom: 5,
+    },
+    value: {
+        fontSize: 16,
+        marginBottom: 15,
     },
     input: {
         height: 40,
@@ -236,34 +257,39 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     button: {
-        backgroundColor: '#007bff',
-        padding: 10,
+        flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 15,
+        backgroundColor: '#000000',
+        padding: 10,
+        borderRadius: 5,
+        alignSelf: 'flex-end',
+    },
+    saveButtonContainer: {
+        alignItems: 'flex-end',
     },
     saveButton: {
-        backgroundColor: '#28a745',
-        padding: 10,
+        flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 15,
+        backgroundColor: '#000000',
+        padding: 10,
+        borderRadius: 5,
+        width: '40%',
+        alignSelf: 'flex-end',
     },
     buttonText: {
-        color: '#fff',
+        color: '#45f500',
+        marginLeft: 5,
         fontSize: 16,
-    },
-    imageContainer: {
-        alignItems: 'center',
-        marginBottom: 15,
-    },
-    image: {
-        width: 100,
-        height: 100,
     },
     errorText: {
         color: 'red',
         textAlign: 'center',
         marginTop: 20,
     },
+    footerContainer: {
+        width: '100%',
+        position: 'absolute',
+        bottom: 0,
+    },
 });
-
 export default FichaJugador;

@@ -7,6 +7,7 @@ import Register from './src/screens/Register'; // Asegúrate de tener una pantal
 import { AuthProvider } from './src/context/AuthContext';
 import FichaJugador from './src/screens/jugador/FichaJugador';
 import CrearPartido from './src/screens/partidos/CrearPartido';
+import FichaJugadorPartido from './src/screens/partidos/FichaJugadorPartido';
 import FichaPartido from './src/screens/partidos/FichaPartido';
 import ListaPartidos from './src/screens/partidos/ListaPartidos'; // Asegúrate de que la ruta es correcta
 import ChangePassword from './src/screens/user/ChangePassword';
@@ -30,6 +31,8 @@ const App: React.FC = () => {
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="EditUser" component={EditUser} />
         <Stack.Screen name="PrincipalPerfil" component={PrincipalPerfil} />
+        <Stack.Screen name="FichaJugadorPartido" component={FichaJugadorPartido} />
+
       </Stack.Navigator>
       </AuthProvider>
     </NavigationContainer>

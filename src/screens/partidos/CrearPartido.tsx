@@ -4,8 +4,15 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Footer from '../../components/Footer';
+import Header from '../../components/Header';
 import config from '../../config/config';
-import { RootStackParamList } from '../../types'; // Adjust the path as necessary
+
+type RootStackParamList = {
+    FichaPartido: { partidoId: string };
+    ListaPartidos: undefined;
+};
 
 const CrearPartido: React.FC = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -42,24 +49,15 @@ const CrearPartido: React.FC = () => {
         const fechaHora = `${fecha}T${hora}:00.000Z`; // Combina fecha y hora en un solo campo
 
         const partido = {
-                  fecha: fechaHora,
+            fecha: fechaHora,
             hora: fechaHora,
-            numeroCancha: parseInt(numeroCancha, 10), 
+            numeroCancha: parseInt(numeroCancha, 10),
             userId: user,
             valorCancha,
             tipoPartido,
             ubicacionComplejo,
             nombreComplejo,
             observacion
-            
-            //complejoId: 1, // Valor fijo para complejoId
-            //valorPersona: 0,
-            //estadoPartidoId: 1,
-            //fechaCreacion: new Date().toISOString(),
-            //descEstadoPartido,
-             
-           
-            
         };
 
         console.log('partido fecha:', partido.fecha);
@@ -100,14 +98,9 @@ const CrearPartido: React.FC = () => {
         }
     };
 
-    const handleRepetirAnterior = async () => {
-        // Lógica para repetir el último partido creado
-        // Puedes implementar esta función según tus necesidades
-        Alert.alert('Repetir Anterior', 'Funcionalidad no implementada');
-    };
-
     return (
         <View style={styles.container}>
+            <Header />
             <Text style={styles.header}>Crear Partido</Text>
             <View style={styles.pickerContainer}>
                 <Picker
@@ -188,12 +181,15 @@ const CrearPartido: React.FC = () => {
                 value={descEstadoPartido}
                 editable={false} // Hacer el campo no editable
             />
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>Crear Partido</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleRepetirAnterior}>
-                <Text style={styles.buttonText}>Repetir Convocatoria Anterior</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                    <Icon name="add-circle" size={20} color="#45f500" />
+                    <Text style={styles.buttonText}>Crear Partido</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.footerContainer}>
+                <Footer />
+            </View>
         </View>
     );
 };
@@ -203,6 +199,9 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         backgroundColor: '#fff',
+    },
+    headerContainer: {
+        width: '100%',
     },
     header: {
         fontSize: 24,
@@ -231,17 +230,26 @@ const styles = StyleSheet.create({
         width: '100%',
         color: 'black', // Asegúrate de que el texto sea visible
     },
-    button: {
-        backgroundColor: '#007bff',
-        padding: 15,
-        borderRadius: 10,
-        alignItems: 'center',
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
         marginTop: 16,
     },
+    button: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#000',
+        padding: 10,
+        borderRadius: 5,
+    },
     buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
+        color: '#45f500',
+        marginLeft: 5,
+    },
+    footerContainer: {
+        width: '100%',
+        position: 'absolute',
+        bottom: 0,
     },
 });
 

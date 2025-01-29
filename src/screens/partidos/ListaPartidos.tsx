@@ -7,7 +7,6 @@ import Header from '../../components/Header'; // Asegúrate de que la ruta sea c
 import config from '../../config/config';
 import { RootStackParamList } from '../../types'; // Asegúrate de que la ruta sea correcta
 import { Partido } from './../../models/partido';
-
 const ListaPartidos: React.FC = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const [data, setData] = useState<Partido[]>([]);
@@ -66,7 +65,9 @@ const ListaPartidos: React.FC = () => {
                 }
 
                 const result = await response.json();
-                setData(result);
+                // Ordenar los partidos por fecha de forma descendente
+                const sortedData = result.sort((a: Partido, b: Partido) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+                setData(sortedData);
             } catch (error) {
                 setError((error as Error).message);
             } finally {
@@ -84,25 +85,38 @@ const ListaPartidos: React.FC = () => {
         navigation.navigate('FichaPartido', { partidoId });
     };
 
-    const renderItem = ({ item }: { item: Partido }) => (
-        <TouchableOpacity style={styles.item} onPress={() => handleVerFicha(item.partidoId)}>
-            <Text style={styles.title}>Fecha: {item.fecha} Hora: {item.hora}</Text>
-            <Text style={styles.subtitle}>{item.nombreComplejo} - {item.descEstadoPartido}</Text>
-        </TouchableOpacity>
-    );
+    const renderItem = ({ item }: { item: Partido }) => {
+        let itemStyle = styles.item;
+        if (item.descEstadoPartido === 'Confirmado') {
+            itemStyle = { ...styles.item, ...styles.confirmedCard };
+        } else if (item.descEstadoPartido === 'Pendiente') {
+            itemStyle = { ...styles.item, ...styles.notConfirmedCard };
+        } else {
+            itemStyle = { ...styles.item, ...styles.injuredCard };
+        }
+
+        return (
+            <TouchableOpacity style={itemStyle} onPress={() => handleVerFicha(item.partidoId)}>
+                <Text style={styles.title}>Fecha: {item.fecha} Hora: {item.hora}</Text>
+                <Text style={styles.subtitle}>{item.nombreComplejo} - {item.descEstadoPartido}</Text>
+            </TouchableOpacity>
+        );
+    };
 
     return (
         <View style={styles.container}>
             <Header />
-            
+            <View style={styles.legendContainer}>
+                <Text style={styles.legendText}>Confirmado: <Text style={{ color: '#45f500' }}>●</Text></Text>
+                <Text style={styles.legendText}>Pendiente: <Text style={{ color: '#faf200' }}>●</Text></Text>
+                <Text style={styles.legendText}>Otro estado: <Text style={{ color: '#ff0000' }}>●</Text></Text>
+            </View>
             <FlatList
                 data={data}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.partidoId.toString()}
+                contentContainerStyle={styles.listContent}
             />
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CrearPartido')}>
-                <Text style={styles.buttonText}>Crear Partido</Text>
-            </TouchableOpacity>
             <Footer />
         </View>
     );
@@ -111,41 +125,50 @@ const ListaPartidos: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-        backgroundColor: '#fff',
+        backgroundColor: '#484848',
     },
-    header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 16,
+    legendContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 10,
+        backgroundColor: '#333',
+    },
+    legendText: {
+        fontSize: 14,
+        color: '#fff',
+    },
+    listContent: {
+        flexGrow: 1,
+        padding: 16,
     },
     item: {
-        backgroundColor: '#fff',
+        backgroundColor: '#484848',
         padding: 20,
         marginVertical: 8,
         borderRadius: 10,
         borderColor: '#808080',
-        borderWidth:1,
+        borderWidth: 1,
+    },
+    confirmedCard: {
+        borderColor: '#45f500',
+        borderTopWidth: 2,
+    },
+    notConfirmedCard: {
+        borderColor: '#faf200',
+        borderTopWidth: 2,
+    },
+    injuredCard: {
+        borderColor: '#ff0000',
+        borderTopWidth: 2,
     },
     title: {
         fontSize: 18,
         fontWeight: 'bold',
+        color: '#fff',
     },
     subtitle: {
         fontSize: 14,
-        color: '#555',
-    },
-    button: {
-        backgroundColor: '#007bff',
-        padding: 15,
-        borderRadius: 10,
-        alignItems: 'center',
-        marginTop: 16,
-    },
-    buttonText: {
         color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
     },
 });
 

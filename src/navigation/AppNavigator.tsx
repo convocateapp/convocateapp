@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import FichaJugador from '../screens/jugador/FichaJugador';
 import Login from '../screens/Login';
 import CrearPartido from '../screens/partidos/CrearPartido';
+import FichaJugadorPartido from '../screens/partidos/FichaJugadorPartido';
 import FichaPartido from '../screens/partidos/FichaPartido';
 import ListaPartidos from '../screens/partidos/ListaPartidos';
 import Register from '../screens/Register';
@@ -28,6 +29,8 @@ const AppNavigator = () => {
                 <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ header: () => <Header /> }} />
                 <Stack.Screen name="EditUser" component={EditUser} options={{ header: () => <Header /> }} />
                 <Stack.Screen name="PrincipalPerfil" component={PrincipalPerfil} options={{ header: () => <Header /> }} />
+                <Stack.Screen name="FichaJugadorPartido" component={FichaJugadorPartido} />
+
             </Stack.Navigator>
         </NavigationContainer>
     );
