@@ -67,36 +67,27 @@ const PrincipalPerfil: React.FC = () => {
     <View style={styles.container}>
       <Header />
       <View style={styles.content}>
-        <Text style={styles.name}>{profileData.name} {profileData.lastname}</Text>
-        <Text style={styles.username}>{profileData.username}</Text>
-        <Text style={styles.role}>Rol: {profileData.role}</Text>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.iconButtonLong} onPress={() => navigation.navigate('EditUser')}>
-            <Icon name="person-add" size={24} color="#45f500" />
-            <Text style={styles.iconButtonText}>Editar usuario</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.iconButtonLong} onPress={() => navigation.navigate('ChangePassword')}>
-         
-          <Icon name="lock-open-outline" size={24} color="#45f500" />
-            <Text style={styles.iconButtonText}>Cambiar contraseña</Text>
-          </TouchableOpacity>
-          </View>
-          <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.iconButtonLong}>
-            <Icon name="people-outline" size={24} color="#45f500"/>
-            <Text style={styles.iconButtonText}>Asignar Rol</Text>
-          </TouchableOpacity>
-
-          </View>
-          <View style={styles.buttonContainer}>
-          <TouchableOpacity style={[styles.iconButtonLong, styles.logoutCard]} onPress={() => {/* Implementar lógica de cierre de sesión */}}>
-            <Icon name="remove-circle-outline" size={24} color="red"/>
-            <Text style={[styles.iconButtonText, styles.logoutText]}>Cerrar sesión</Text>
-          </TouchableOpacity>
+        <View style={styles.infoContainer}>
+              <Text style={styles.title}>Perfil</Text>
+              <Text style={styles.name}>{profileData.name} {profileData.lastname}</Text>
+              <Text style={styles.username}>{profileData.username}</Text>
+              <Text style={styles.role}>Rol: {profileData.role}</Text>
+              <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('EditUser')}>
+                <Icon name="person-add" size={24} color="#000" />
+                <Text style={styles.title}>Editar usuario</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('ChangePassword')}>
+              <Icon name="lock-open-outline" size={24} color="#000" />
+                <Text style={styles.title}>Cambiar contraseña</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.item}>
+                  <Icon name="people-outline" size={24} color="#000"/>
+                  <Text style={styles.title}>Asignar Rol</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.item, styles.logoutCard]} onPress={() => {/* Implementar lógica de cierre de sesión */}}>
+                <Icon name="remove-circle-outline" size={24} color="red"/>
+                <Text style={[styles.title, styles.logoutText]}>Cerrar sesión</Text>
+              </TouchableOpacity>
           </View>
       </View>
       <Footer />
