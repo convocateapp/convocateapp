@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import config from '../config/config';
 import { AuthContext } from '../context/AuthContext';
 import { RequestRegisterUser } from '../models/requestRegisterUser';
+import styles from '../styles/ConvocateAppHeaderStyle';
 const Header: React.FC = () => {
   const { token, user } = useContext(AuthContext);
   const [name, setName] = useState('');
@@ -50,30 +51,6 @@ const Header: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    width: '100%',
-    backgroundColor: '#000', // Degradado de izquierda a derecha
-    borderBottomColor: '#45f500',
-    borderBottomWidth: 3,
-  },
-  appName: {
-    fontSize: 18,
-    color: '#ffffff',
-  },
-  usernameContainer: {
-    flex: 1,
-    alignItems: 'flex-end',
-    
-  },
-  username: {
-    fontSize: 18,
-    color: '#ffffff',
-  },
-});
+
 
 export default Header;

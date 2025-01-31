@@ -2,12 +2,13 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../../../src/context/AuthContext';
 import Footer from '../../components/Footer'; // Adjust the path as necessary
 import Header from '../../components/Header'; // Adjust the path as necessary
 import config from '../../config/config';
+import styles from '../../styles/ConvocateAppStyles'; // Importa los estilos globales
 
 // Importar la imagen predeterminada utilizando require
 const defaultImage = require('../../../assets/images/icon/ConvocateApp-jugadornn.png');
@@ -171,38 +172,65 @@ const FichaJugador = () => {
     return (
         <View style={styles.container}>
             <Header />
-            <View style={styles.infoContainer}>
-                <View style={styles.imageRow}>
-                    <Image source={fotoPrincipal ? { uri: fotoPrincipal } : defaultImage} style={styles.image} />
-                    <TouchableOpacity style={styles.button} onPress={pickImage}>
-                        <Icon name="image" size={20} color="#45f500" />
-                        <Text style={styles.buttonText}>Cargar Imagen</Text>
-                    </TouchableOpacity>
-                </View>
+            <View style={styles.content}>
+                <View style={styles.infoContainer}>
+                    <View style={styles.imageRow}>
+                        <Image source={fotoPrincipal ? { uri: fotoPrincipal } : defaultImage} style={styles.image} />
+                        <TouchableOpacity style={styles.button} onPress={pickImage}>
+                            <Icon name="image" size={20} color="#45f500" />
+                            <Text style={styles.buttonText}>Cargar Imagen</Text>
+                        </TouchableOpacity>
+                    </View>
+                    
+                    <Text style={styles.label}>Jugador ID</Text>
+                    <Text style={styles.value}>{jugadorId}</Text>
 
-                <Text style={styles.label}>Jugador ID</Text>
-                <Text style={styles.value}>{jugadorId}</Text>
+                    <TextInput 
+                        style={styles.input}
+                        placeholder="Nombre"
+                        value={nombres} 
+                        onChangeText={setNombres} 
+                        placeholderTextColor="#fff" // Color del placeholder
+                    />
 
-                <Text style={styles.label}>Nombres</Text>
-                <TextInput style={styles.input} value={nombres} onChangeText={setNombres} />
+                    <TextInput 
+                        style={styles.input}
+                        value={telefono}
+                        placeholder="Teléfono"
+                        onChangeText={setTelefono} 
+                        placeholderTextColor="#fff" // Color del placeholder
+                    />
 
-                <Text style={styles.label}>Teléfono</Text>
-                <TextInput style={styles.input} value={telefono} onChangeText={setTelefono} />
+                    <TextInput 
+                        style={styles.input}
+                        value={idEstado} 
+                        onChangeText={setIdEstado}
+                        placeholder="Estado Jugador" 
+                        placeholderTextColor="#fff" // Color del placeholder
+                    />
 
-                <Text style={styles.label}>ID Estado</Text>
-                <TextInput style={styles.input} value={idEstado} onChangeText={setIdEstado} />
+                    <TextInput 
+                        style={styles.input}
+                        value={fechaNacimiento} 
+                        onChangeText={setFechaNacimiento} 
+                        placeholder="Fecha Nacimiento" 
+                        placeholderTextColor="#fff" // Color del placeholder
+                    />
 
-                <Text style={styles.label}>Fecha Nacimiento</Text>
-                <TextInput style={styles.input} value={fechaNacimiento} onChangeText={setFechaNacimiento} />
+                    <TextInput 
+                        style={styles.input}
+                        placeholder="Email" 
+                        value={email} 
+                        onChangeText={setEmail} 
+                        placeholderTextColor="#fff" // Color del placeholder
+                    />
 
-                <Text style={styles.label}>Email</Text>
-                <TextInput style={styles.input} value={email} onChangeText={setEmail} />
-
-                <View style={styles.saveButtonContainer}>
-                    <TouchableOpacity style={styles.saveButton} onPress={saveJugadorData}>
-                        <Icon name="save" size={20} color="#45f500" />
-                        <Text style={styles.buttonText}>Guardar</Text>
-                    </TouchableOpacity>
+                    <View style={styles.saveButtonContainer}>
+                        <TouchableOpacity style={styles.saveButton} onPress={saveJugadorData}>
+                            <Icon name="save" size={20} color="#45f500" />
+                            <Text style={styles.buttonText}>Guardar</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
             <View style={styles.footerContainer}>
@@ -212,84 +240,4 @@ const FichaJugador = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#f8f9fa',
-    },
-    infoContainer: {
-        marginBottom: 16,
-        backgroundColor: '#ffffff',
-        padding: 16,
-        borderRadius: 8,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 5,
-    },
-    imageRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 15,
-    },
-    imageContainer: {
-        alignItems: 'center',
-    },
-    image: {
-        width: 100,
-        height: 100,
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 5,
-    },
-    value: {
-        fontSize: 16,
-        marginBottom: 15,
-    },
-    input: {
-        height: 40,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        marginBottom: 15,
-        paddingHorizontal: 10,
-    },
-    button: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#000000',
-        padding: 10,
-        borderRadius: 5,
-        alignSelf: 'flex-end',
-    },
-    saveButtonContainer: {
-        alignItems: 'flex-end',
-    },
-    saveButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#000000',
-        padding: 10,
-        borderRadius: 5,
-        width: '40%',
-        alignSelf: 'flex-end',
-    },
-    buttonText: {
-        color: '#45f500',
-        marginLeft: 5,
-        fontSize: 16,
-    },
-    errorText: {
-        color: 'red',
-        textAlign: 'center',
-        marginTop: 20,
-    },
-    footerContainer: {
-        width: '100%',
-        position: 'absolute',
-        bottom: 0,
-    },
-});
 export default FichaJugador;

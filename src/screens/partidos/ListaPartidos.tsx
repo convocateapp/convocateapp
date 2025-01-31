@@ -1,12 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header'; // Asegúrate de que la ruta sea correcta
 import config from '../../config/config';
+import styles from '../../styles/ConvocateAppStyles'; // Importa los estilos globales
 import { RootStackParamList } from '../../types'; // Asegúrate de que la ruta sea correcta
 import { Partido } from './../../models/partido';
+
 const ListaPartidos: React.FC = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const [data, setData] = useState<Partido[]>([]);
@@ -122,54 +124,5 @@ const ListaPartidos: React.FC = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#484848',
-    },
-    legendContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        padding: 10,
-        backgroundColor: '#333',
-    },
-    legendText: {
-        fontSize: 14,
-        color: '#fff',
-    },
-    listContent: {
-        flexGrow: 1,
-        padding: 16,
-    },
-    item: {
-        backgroundColor: '#484848',
-        padding: 20,
-        marginVertical: 8,
-        borderRadius: 10,
-        borderColor: '#808080',
-        borderWidth: 1,
-    },
-    confirmedCard: {
-        borderColor: '#45f500',
-        borderTopWidth: 2,
-    },
-    notConfirmedCard: {
-        borderColor: '#faf200',
-        borderTopWidth: 2,
-    },
-    injuredCard: {
-        borderColor: '#ff0000',
-        borderTopWidth: 2,
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#fff',
-    },
-    subtitle: {
-        fontSize: 14,
-        color: '#fff',
-    },
-});
 
 export default ListaPartidos;

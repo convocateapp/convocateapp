@@ -2,12 +2,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import config from '../../config/config';
+import styles from '../../styles/ConvocateAppStyles'; // Importa los estilos globales
 
 type RootStackParamList = {
     FichaPartido: { partidoId: string };
@@ -27,7 +28,6 @@ const CrearPartido: React.FC = () => {
     const [observacion, setObservacion] = useState('');
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-    const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
     useEffect(() => {
         setDescEstadoPartido('Pendiente'); // Asegurarse de que el valor sea "Pendiente"
@@ -36,11 +36,6 @@ const CrearPartido: React.FC = () => {
     const handleConfirmDate = (date: Date) => {
         setFecha(date.toISOString().split('T')[0]);
         setDatePickerVisibility(false);
-    };
-
-    const handleConfirmTime = (time: Date) => {
-        setHora(time.toTimeString().split(' ')[0].substring(0, 5));
-        setTimePickerVisibility(false);
     };
 
     const handleSubmit = async () => {
@@ -101,91 +96,85 @@ const CrearPartido: React.FC = () => {
     return (
         <View style={styles.container}>
             <Header />
-            <Text style={styles.header}>Crear Partido</Text>
-            <View style={styles.pickerContainer}>
-                <Picker
-                    selectedValue={tipoPartido}
-                    style={styles.picker}
-                    onValueChange={(itemValue) => setTipoPartido(itemValue)}
-                >
-                    <Picker.Item label="Seleccionar Tipo Partido" value="0" />
-                    <Picker.Item label="Baby Futbol" value="1" />
-                    <Picker.Item label="Futbolito" value="2" />
-                    <Picker.Item label="Futbol" value="3" />
-                </Picker>
-            </View>
-            <TouchableOpacity onPress={() => setDatePickerVisibility(true)}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Fecha (YYYY-MM-DD)"
-                    value={fecha}
-                    editable={false}
-                />
-            </TouchableOpacity>
-            <DateTimePickerModal
-                isVisible={isDatePickerVisible}
-                mode="date"
-                onConfirm={handleConfirmDate}
-                onCancel={() => setDatePickerVisibility(false)}
-            />
-            <TouchableOpacity onPress={() => setTimePickerVisibility(true)}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Hora (HH:MM)"
-                    value={hora}
-                    editable={false}
-                />
-            </TouchableOpacity>
-            <DateTimePickerModal
-                isVisible={isTimePickerVisible}
-                mode="time"
-                onConfirm={handleConfirmTime}
-                onCancel={() => setTimePickerVisibility(false)}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Nombre del Complejo"
-                value={nombreComplejo}
-                onChangeText={setNombreComplejo}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Ubicación Complejo"
-                value={ubicacionComplejo}
-                onChangeText={setUbicacionComplejo}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Valor Cancha"
-                value={valorCancha}
-                onChangeText={setValorCancha}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Número de Cancha"
-                value={numeroCancha}
-                onChangeText={setNumeroCancha}
-                keyboardType="numeric"
-            />
-            <TextInput
-                style={[styles.input, styles.textArea]}
-                placeholder="Observación"
-                value={observacion}
-                onChangeText={setObservacion}
-                multiline={true}
-                numberOfLines={4}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Estado del Partido"
-                value={descEstadoPartido}
-                editable={false} // Hacer el campo no editable
-            />
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                    <Icon name="add-circle" size={20} color="#45f500" />
-                    <Text style={styles.buttonText}>Crear Partido</Text>
-                </TouchableOpacity>
+            <View style={styles.content}>
+                <View style={styles.infoContainer}>
+                    <Text style={styles.header}>Crear Partido</Text>
+                    <View style={styles.pickerContainer}>
+                        <Picker
+                            selectedValue={tipoPartido}
+                            style={styles.picker}
+                            onValueChange={(itemValue) => setTipoPartido(itemValue)}
+                        >
+                            <Picker.Item label="Seleccionar Tipo Partido" value="0" />
+                            <Picker.Item label="Baby Futbol" value="1" />
+                            <Picker.Item label="Futbolito" value="2" />
+                            <Picker.Item label="Futbol" value="3" />
+                        </Picker>
+                    </View>
+                    <View style={styles.row}>
+                        <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={styles.halfInputContainer}>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Fecha (YYYY-MM-DD)"
+                                value={fecha}
+                                editable={false}
+                            />
+                        </TouchableOpacity>
+                        <TextInput
+                            style={[styles.input, styles.halfInput]}
+                            placeholder="Hora (HH:MM)"
+                            value={hora}
+                            onChangeText={setHora}
+                        />
+                    </View>
+                    <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleConfirmDate}
+                        onCancel={() => setDatePickerVisibility(false)}
+                    />
+                    <View style={styles.row}>
+                        <TextInput
+                            style={[styles.input, styles.halfInput]}
+                            placeholder="Número de Cancha"
+                            value={numeroCancha}
+                            onChangeText={setNumeroCancha}
+                            keyboardType="numeric"
+                        />
+                        <TextInput
+                            style={[styles.input, styles.halfInput]}
+                            placeholder="Valor Cancha"
+                            value={valorCancha}
+                            onChangeText={setValorCancha}
+                        />
+                    </View>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Nombre del Complejo"
+                        value={nombreComplejo}
+                        onChangeText={setNombreComplejo}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Ubicación Complejo"
+                        value={ubicacionComplejo}
+                        onChangeText={setUbicacionComplejo}
+                    />
+                    <TextInput
+                        style={[styles.input, styles.textArea]}
+                        placeholder="Observación"
+                        value={observacion}
+                        onChangeText={setObservacion}
+                        multiline={true}
+                        numberOfLines={4}
+                    />
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                            <Icon name="add-circle" size={20} color="#45f500" />
+                            <Text style={styles.buttonText}>Crear Partido</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </View>
             <View style={styles.footerContainer}>
                 <Footer />
@@ -193,64 +182,5 @@ const CrearPartido: React.FC = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
-        backgroundColor: '#fff',
-    },
-    headerContainer: {
-        width: '100%',
-    },
-    header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 16,
-    },
-    input: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 12,
-        paddingHorizontal: 8,
-    },
-    textArea: {
-        height: 100, // Ajustar la altura para el campo de texto multilinea
-    },
-    pickerContainer: {
-        height: 50, // Aumentar la altura para asegurar que el contenido sea visible
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 12,
-        justifyContent: 'center',
-    },
-    picker: {
-        height: 50, // Aumentar la altura para asegurar que el contenido sea visible
-        width: '100%',
-        color: 'black', // Asegúrate de que el texto sea visible
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        marginTop: 16,
-    },
-    button: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#000',
-        padding: 10,
-        borderRadius: 5,
-    },
-    buttonText: {
-        color: '#45f500',
-        marginLeft: 5,
-    },
-    footerContainer: {
-        width: '100%',
-        position: 'absolute',
-        bottom: 0,
-    },
-});
 
 export default CrearPartido;

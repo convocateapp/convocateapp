@@ -1,11 +1,13 @@
+// FichaJugadorPartido.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import config from '../../config/config';
+import styles from '../../styles/ConvocateAppStyles'; // Importa los estilos globales
 
 const defaultImage = require('../../../assets/images/icon/ConvocateApp-jugadornn.png');
 
@@ -178,72 +180,4 @@ const FichaJugadorPartido = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#484848',
-        color: '#fff',
-    },
-    content: {
-        flex: 1,
-        padding: 16,
-    },
-    infoContainer: {
-        marginBottom: 16,
-        backgroundColor: '#484848',
-        padding: 16,
-        borderRadius: 8,
-        shadowColor: '#fff',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 5,
-    },
-    imageContainer: {
-        alignItems: 'center',
-        marginBottom: 15,
-    },
-    image: {
-        width: 100,
-        height: 100,
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 5,
-        fontWeight: 'bold',
-        color: '#fff', // Cambiar el color del texto a blanco
-    },
-    value: {
-        fontSize: 16,
-        marginBottom: 15,
-        color: '#fff', // Cambiar el color del texto a blanco
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    confirmButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#000000',
-        padding: 10,
-        borderRadius: 5,
-    },
-    deleteButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#000000',
-        padding: 10,
-        borderRadius: 5,
-    },
-    buttonText: {
-        color: '#45f500',
-        marginLeft: 5,
-    },
-    errorText: {
-        color: 'red',
-        textAlign: 'center',
-        marginTop: 20,
-    },
-});
 export default FichaJugadorPartido;

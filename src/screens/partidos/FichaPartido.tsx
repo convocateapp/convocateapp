@@ -3,12 +3,13 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as Contacts from 'expo-contacts';
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Animated, Button, Image, Modal, PanResponder, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Animated, Button, Image, Modal, PanResponder, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import { RequestGetJugadorId } from '../../models/requestGetJugadorId';
 import { RequestRegisterUser } from '../../models/requestRegisterUser';
+import styles from '../../styles/ConvocateAppStyles'; // Importa los estilos globales
 import config from './../../config/config'; // Asegúrate de importar tu configuración
 
 type RootStackParamList = {
@@ -285,8 +286,7 @@ const FichaPartido = () => {
                     <Text style={styles.subHeader}>Convocados ({jugadores.filter((jugador: any) => jugador.estadoJugador === '1').length} de {jugadores.length})</Text>
                     <ScrollView style={styles.scrollView}>
                         {jugadores.map((jugador: any, index: number) => {
-                            console.log(`Jugador ${index}: ${jugador.descEstadoJugadorPartido}`);
-                            return (
+                         return (
                                 <View key={index} style={[
                                     styles.card,
                                     jugador.descEstadoJugadorPartido === 'Confirmado' ? styles.confirmedCard :
@@ -299,7 +299,7 @@ const FichaPartido = () => {
                                         <Text style={styles.cardText}>{jugador.descEstadoJugadorPartido}</Text>
                                     </View>
                                     <TouchableOpacity onPress={() => user && navigation.navigate('FichaJugadorPartido', { jugadorId: jugador.jugadorId, partidoId, user })}>
-                                        <Icon name="chevron-forward" size={24} color="#fff" />
+                                        <Icon name="chevron-forward" size={24} color="#000" />
                                     </TouchableOpacity>
                                 </View>
                             );
@@ -313,174 +313,5 @@ const FichaPartido = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#484848', // Cambiar el color de fondo aquí
-    },
-    content: {
-        flex: 1,
-        padding: 16,
-    },
-    header: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        color: '#343a40',
-        textAlign: 'center',
-    },
-    subHeader: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        color: '#fff',
-    },
-    infoContainer: {
-        marginBottom: 16,
-        backgroundColor: '#484848',
-        padding: 16,
-        borderRadius: 8,
-        shadowColor: '#fff',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 5,
-    },
-    infoText: {
-        fontSize: 16,
-        marginBottom: 8,
-        color: '#fff',
-    },
-    boldText: {
-        fontWeight: 'bold',
-        color: '#fff',
-    },
-    indicatorContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginBottom: 16,
-    },
-    indicator: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-        backgroundColor: '#ced4da',
-        marginHorizontal: 5,
-    },
-    activeIndicator: {
-        backgroundColor: '#495057',
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginBottom: 16,
-    },
-    iconButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#000',
-        padding: 10,
-        borderRadius: 5,
-    },
-    iconButtonText: {
-        color: '#45f500',
-        marginLeft: 5,
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-    },
-    modalContent: {
-        width: '80%',
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
-        alignItems: 'center',
-    },
-    modalTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    modalScrollView: {
-        width: '100%',
-    },
-    contactItem: {
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-    },
-    contactText: {
-        fontSize: 16,
-    },
-    jugadoresContainer: {
-        flex: 1,
-    },
-    scrollView: {
-        maxHeight: 450,
-    },
-    card: {
-        backgroundColor: '#484848', // Cambiar el color de fondo aquí
-        borderColor: '#ced4da',
-        borderWidth: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 16,
-        padding: 16,
-        borderRadius: 8,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 5,
-    },
-    confirmedCard: {
-        borderColor: '#45f500',
-        borderTopWidth: 5,
-    },
-    notConfirmedCard: {
-        borderColor: '#faf200',
-        borderTopWidth: 5,
-    },
-    injuredCard: {
-        borderColor: '#ff0000',
-        borderTopWidth: 5,
-    },
-    playerImage: {
-        width: 50,
-        height: 50,
-        marginRight: 16,
-    },
-    cardBody: {
-        flex: 1,
-    },
-    cardTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#fff',
-    },
-    cardText: {
-        fontSize: 14,
-        color: '#fff',
-    },
-    arrowButton: {
-        padding: 8,
-        backgroundColor: 'transparent',
-        borderRadius: 4,
-    },
-    errorText: {
-        color: 'red',
-        textAlign: 'center',
-        marginTop: 20,
-    },
-    footerContainer: {
-        width: '100%',
-        position: 'absolute',
-        bottom: 0,
-    },
-});
 
 export default FichaPartido;
